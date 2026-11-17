@@ -115,10 +115,32 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .sec-head p { color: var(--fg-52); font-size: 14px; max-width: 360px; }
 
 /* ---------- about ---------- */
-.about { display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px; }
-.about-lead { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.45; font-weight: 600; letter-spacing: -0.03em; }
-.about-lead em { font-style: normal; color: var(--accent); }
-.about-lead + p { margin-top: 24px; color: var(--fg-72); font-size: 15px; }
+/* 왼쪽 사진+연락처 / 오른쪽 제목·소개·스킬 태그·학력 */
+.about { display: grid; grid-template-columns: 300px 1fr; gap: 64px; }
+.about-photo {
+  position: relative; aspect-ratio: 3 / 4; border-radius: 4px; overflow: hidden;
+  background: var(--card); border: 1px solid var(--line); display: grid; place-items: center;
+}
+.about-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 12%; z-index: 1; }
+.about-photo span { font-family: "Bebas Neue", var(--sans); font-size: 22px; letter-spacing: .2em; color: var(--fg-52); }
+.about-info { margin-top: 20px; display: grid; gap: 2px; font-size: 13px; line-height: 1.9; }
+.about-info a { color: var(--fg); transition: color .2s; overflow-wrap: anywhere; }
+.about-info a:hover { color: var(--accent); }
+.about-h { font-family: "Bebas Neue", var(--sans); font-size: 44px; font-weight: 400; letter-spacing: .02em; line-height: 1; color: var(--accent); margin-bottom: 24px; }
+.about-text { max-width: 640px; font-size: 15px; line-height: 1.95; color: var(--fg); margin-bottom: 40px; }
+.about-skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.about-main h4 { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--accent); margin-bottom: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { font-size: 12px; padding: 5px 11px; border: 1px solid var(--line); border-radius: 20px; color: var(--fg-72); }
+/* 작업물 태그: 누르면 해당 작품 상세 창이 열림 */
+.chip-link {
+  font-size: 12px; padding: 5px 11px; border: 1px solid rgba(185, 163, 245, .45); border-radius: 20px;
+  color: var(--fg); background: rgba(185, 163, 245, .08); cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s, transform .35s var(--spring);
+}
+.chip-link:hover { background: var(--accent); border-color: var(--accent); color: #141415; transform: translateY(-2px); }
+.about-facts { margin-top: 44px; padding-top: 32px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.about-facts p { font-size: 13px; line-height: 1.8; color: var(--fg); }
 .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .fact { background: var(--card); border-radius: 20px; padding: 28px; }
 .fact h3 { font-size: 12px; font-weight: 700; letter-spacing: .14em; color: var(--accent); margin-bottom: 14px; }
@@ -149,42 +171,38 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .tab:hover { color: var(--fg); }
 .tab[aria-selected="true"] { background: var(--fg); color: #141415; }
 .tab .n { margin-left: 6px; opacity: .55; font-weight: 500; }
-.works { display: grid; gap: 48px; }
-/* 목록: 작품 하나 = 카드 하나 (대표 이미지 + 짧은 소개), 클릭하면 상세 창 */
+/* 목록: 스크롤하면 작품 행이 위에서부터 차곡차곡 쌓이는 리스트
+   (왼쪽 번호 · 가운데 제목/부제/설명/태그/버튼 · 오른쪽 이미지 창) */
+.works { --solo-top: 84px; --solo-step: 70px; --solo-h: clamp(400px, 60vh, 520px); }
 .work {
-  display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center;
-  background: var(--card); border-radius: 24px; padding: 44px;
+  position: sticky; top: calc(var(--solo-top) + var(--i, 0) * var(--solo-step));
+  display: grid; grid-template-columns: 72px minmax(0, 1fr) 42%; column-gap: 40px;
+  height: var(--solo-h); padding: 20px 0 28px; background: var(--bg-alt); border-top: 1px solid rgba(242, 242, 240, .45);
 }
 .work[hidden] { display: none; }
 .work > * { min-width: 0; }
-.shot-main {
-  position: relative; display: block; width: 100%; background: var(--panel); border-radius: 16px; padding: 14px;
-  overflow: hidden; transition: transform .45s var(--spring);
+.solo-idx { padding-top: 10px; font-size: 13px; font-weight: 700; letter-spacing: .08em; color: var(--accent); }
+.solo-main { display: flex; flex-direction: column; overflow: hidden; }
+.solo-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin-bottom: 28px; }
+.solo-name { font-size: clamp(26px, 3vw, 40px); font-weight: 800; line-height: 1.1; letter-spacing: -0.04em; white-space: nowrap; }
+.solo-sub { flex-shrink: 0; font-size: 13px; color: var(--fg-52); text-align: right; }
+.solo-text p { margin-bottom: 16px; font-size: 15px; line-height: 1.7; color: var(--fg-72); }
+.solo-text p em { font-style: normal; font-weight: 700; color: var(--accent); }
+.solo-tags { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 10px; font-size: 12.5px; color: var(--fg-52); }
+.solo-role { display: block; margin-bottom: 18px; font-size: 13px; color: var(--fg-72); }
+.solo-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.solo-btns button, .solo-btns span {
+  display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px;
+  border: 1px solid rgba(242, 242, 240, .4); font-size: 13px; color: var(--fg);
 }
-.shot-main:hover { transform: translateY(-4px); }
-.shot-main img { border-radius: 8px; aspect-ratio: 1.42; object-fit: cover; width: 100%; height: auto; transition: transform .8s cubic-bezier(.2, .8, .2, 1); }
-.shot-main:hover img { transform: scale(1.03); }
-.cue {
-  position: absolute; left: 26px; bottom: 26px; display: inline-flex; gap: 6px; align-items: center;
-  height: 34px; padding: 0 14px; border-radius: 999px; background: rgba(14, 14, 15, .82); color: var(--fg);
-  font-size: 12.5px; font-weight: 600; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  opacity: 0; transform: translateY(6px); transition: .3s;
-}
-.cue i { font-style: normal; color: var(--accent); }
-.shot-main:hover .cue, .shot-main:focus-visible .cue { opacity: 1; transform: none; }
-@media (hover: none) { .cue { opacity: 1; transform: none; } }
+.solo-btns button { transition: background .2s, color .2s, border-color .2s; }
+.solo-btns button:hover, .solo-btns button:focus-visible { background: var(--accent); border-color: var(--accent); color: #141415; }
+.solo-btns span { border-color: var(--line); color: var(--fg-52); }
+.solo-shot { display: block; align-self: start; width: 100%; overflow: hidden; border-radius: 10px; background: var(--panel); }
+.solo-shot img { display: block; width: 100%; height: auto; aspect-ratio: 1.42; object-fit: cover; transition: transform .8s cubic-bezier(.2, .8, .2, 1); }
+.solo-shot:hover img { transform: scale(1.04); }
 .meta { font-size: 13px; font-weight: 500; color: var(--fg-52); }
 .meta b { color: var(--accent); font-weight: 600; }
-.work h3 { margin: 10px 0 6px; font-size: clamp(22px, 2.4vw, 28px); font-weight: 700; line-height: 1.3; letter-spacing: -0.03em; }
-.work .tools { font-size: 13px; color: var(--fg-52); }
-.work .desc { margin-top: 20px; color: var(--fg-72); font-size: 15.5px; }
-.more {
-  margin-top: 28px; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px;
-  border-radius: 999px; background: var(--fg); color: #141415; font-size: 14px; font-weight: 700;
-  transition: background .2s, transform .45s var(--spring);
-}
-.more:hover { background: var(--accent); transform: translateY(-2px); }
-.more small { font-weight: 500; opacity: .6; }
 .points { margin-top: 28px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .point { background: var(--card-in); border-radius: 14px; padding: 16px 14px; }
 .point h4 { font-size: 14px; font-weight: 700; line-height: 1.35; }
@@ -204,7 +222,27 @@ a.v:hover { color: var(--accent); }
 .icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; transition: .2s; }
 .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
 .icon-btn svg { width: 15px; height: 15px; }
-.foot { padding: 32px 0 48px; color: var(--fg-52); font-size: 12px; text-align: center; }
+.foot { padding: 32px 0 48px; color: var(--fg-52); font-size: 12px; line-height: 1.8; text-align: center; }
+
+/* ---------- contact me 마퀴 띠 ---------- */
+.marquee {
+  display: block; overflow: hidden; padding: 18px 0; margin-top: 24px;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(185, 163, 245, .05);
+  transition: background .3s;
+}
+.marquee:hover { background: rgba(185, 163, 245, .12); }
+.marquee-track { display: flex; align-items: center; width: max-content; animation: marquee 32s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+/* 같은 문구를 두 번 이어 붙였으므로 절반만큼 이동하면 끊김 없이 반복 */
+@keyframes marquee { to { transform: translate3d(-50%, 0, 0); } }
+.marquee-track span, .marquee-track i { flex-shrink: 0; padding: 0 .35em; white-space: nowrap; }
+.marquee-track span {
+  font-family: "Bebas Neue", var(--sans); font-size: clamp(56px, 9vw, 120px); line-height: 1; letter-spacing: .02em;
+  color: transparent; -webkit-text-stroke: 1.2px rgba(242, 242, 240, .7); transition: color .3s;
+}
+.marquee:hover .marquee-track span { color: rgba(242, 242, 240, .9); }
+.marquee-track i { font-family: "Mrs Saint Delafield", cursive; font-style: normal; font-size: clamp(52px, 8vw, 110px); line-height: 1.1; color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
 
 /* ---------- detail view: 작품 클릭 시 화면 전체를 덮는 상세 창 ---------- */
 .dv {
@@ -267,7 +305,13 @@ a.v:hover { color: var(--accent); }
 /* ---------- responsive ---------- */
 @media (max-width: 960px) {
   .about, .contact { grid-template-columns: 1fr; gap: 40px; }
-  .work { grid-template-columns: 1fr; gap: 28px; padding: 28px; }
+  .about-side { display: grid; grid-template-columns: 180px 1fr; gap: 24px; align-items: end; }
+  .about-info { margin-top: 0; }
+  /* 좁은 화면에서는 쌓이지 않고 차례로 나열 */
+  .work { position: static; height: auto; grid-template-columns: 40px minmax(0, 1fr); padding: 24px 0 40px; }
+  .solo-head { flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .solo-sub { text-align: left; }
+  .solo-shot { grid-column: 1 / -1; margin-top: 24px; }
   .dv-head { grid-template-columns: 1fr; gap: 24px; }
 }
 @media (max-width: 640px) {
@@ -280,7 +324,8 @@ a.v:hover { color: var(--accent); }
   .hero-greeting { margin-top: 40px; font-size: 15px; line-height: 1.9; }
   .hero-greeting span { display: inline; }
   .hero-scroll { margin-top: 48px; font-size: 17px; }
-  .facts { grid-template-columns: 1fr; }
+  .about-side { grid-template-columns: 120px 1fr; gap: 16px; }
+  .about-skills, .about-facts { grid-template-columns: 1fr; gap: 24px; }
   .skills { padding: 48px 20px; border-radius: 20px; }
   .skill dt { font-size: 18px; margin-bottom: 12px; }
   .skill dd span { display: inline; font-size: 15px; line-height: 1.9; }
@@ -290,13 +335,11 @@ a.v:hover { color: var(--accent); }
   .fact { padding: 22px; }
   .tabs { display: flex; width: 100%; overflow-x: auto; }
   .tab { flex: 1 0 auto; padding: 0 14px; }
-  .work { padding: 16px 16px 22px; border-radius: 20px; }
-  .shot-main { padding: 8px; border-radius: 12px; }
+  .work { grid-template-columns: 1fr; }
+  .solo-idx { padding: 0 0 8px; }
   .points { grid-template-columns: 1fr; }
   .row { grid-template-columns: 64px 1fr auto; }
   .row .v { font-size: 15px; }
-  .cue { left: 16px; bottom: 16px; height: 30px; font-size: 12px; }
-  .more { width: 100%; justify-content: center; }
   .dv-bar { height: 64px; }
   .dv-body { padding: 36px var(--gutter) 64px; }
   .dv-head { padding-bottom: 32px; }
@@ -318,7 +361,7 @@ a.v:hover { color: var(--accent); }
       <a href="#works">WORKS</a>
       <a href="#contact">CONTACT</a>
     </nav>
-    <a class="pill" href="01/portfolio.pdf" target="_blank" rel="noopener">2026 WORKS</a>
+    <a class="pill" href="#works">2026 WORKS</a>
   </div>
 </header>
 
@@ -345,45 +388,53 @@ a.v:hover { color: var(--accent); }
   <!-- ABOUT -->
   <section class="sec sec-alt" id="about">
     <div class="wrap">
-      <div class="sec-head rv">
-        <h2 class="sec-title">About <span class="it">Me.</span></h2>
-      </div>
       <div class="about">
-        <div class="rv">
-          <p class="about-lead">읽히는 구성을 먼저 고민하고,<br><em>내용에 맞는 모양</em>을 찾는<br>편집·콘텐츠 디자이너입니다.</p>
-          <p>잡지와 리플렛, 브로슈어 같은 편집물부터 북커버, 웹페이지 기획까지 — 정보를 정리하고 위계를 세워, 보는 사람이 자연스럽게 따라 읽을 수 있는 흐름을 만듭니다.</p>
+        <!-- 왼쪽: 프로필 사진 + 연락처 (사진은 01/profile.jpg 로 넣으면 자동 표시) -->
+        <div class="about-side rv">
+          <div class="about-photo">
+            <img src="01/profile.jpg" alt="최서윤" onerror="this.remove()">
+            <span aria-hidden="true">PHOTO</span>
+          </div>
+          <div class="about-info">
+            <a href="tel:01055594719">010-5559-4719</a>
+            <a href="mailto:syynsb@naver.com">syynsb@naver.com</a>
+          </div>
         </div>
-        <div class="facts rv">
-          <div class="fact">
-            <h3>EDUCATION</h3>
-            <ul>
-              <li><b>2027.2</b>서일대학교 졸업 예정</li>
-              <li><b>2023.2</b>상일여자고등학교 졸업</li>
-            </ul>
+        <!-- 오른쪽: 제목 · 소개 · 스킬 태그 · 학력/자격 -->
+        <div class="about-main rv">
+          <h2 class="about-h">ABOUT</h2>
+          <p class="about-text">서일대학교 졸업 예정. 읽히는 구성을 먼저 고민하고, 내용에 맞는 모양을 찾는 편집·콘텐츠 디자이너입니다. 잡지와 리플렛, 브로슈어 같은 편집물부터 북커버, 웹페이지 기획까지 — 정보를 정리하고 위계를 세워, 보는 사람이 자연스럽게 따라 읽을 수 있는 흐름을 만듭니다.</p>
+
+          <div class="about-skills">
+            <div>
+              <h4>디자인 툴</h4>
+              <div class="chips"><span>InDesign</span><span>Illustrator</span><span>Photoshop</span></div>
+            </div>
+            <div>
+              <h4>작업 분야</h4>
+              <div class="chips"><span>편집 디자인</span><span>콘텐츠 기획</span><span>콘텐츠 시각화</span></div>
+            </div>
+            <div>
+              <h4>작업물</h4>
+              <div class="chips">
+                <button type="button" class="chip-link" data-open="0" data-cursor-text="View">잡지 ↗</button>
+                <button type="button" class="chip-link" data-open="2" data-cursor-text="View">리플렛 ↗</button>
+                <button type="button" class="chip-link" data-open="3" data-cursor-text="View">브로슈어 ↗</button>
+                <button type="button" class="chip-link" data-open="4" data-cursor-text="View">북커버 ↗</button>
+                <button type="button" class="chip-link" data-open="1" data-cursor-text="View">웹페이지 기획 ↗</button>
+              </div>
+            </div>
           </div>
-          <div class="fact">
-            <h3>CERTIFICATION</h3>
-            <ul>
-              <li>한국사능력검정 1급</li>
-              <li>GTQ 1급</li>
-              <li>그림책창작전문지도사 2급</li>
-            </ul>
-          </div>
-          <div class="fact">
-            <h3>TOOLS</h3>
-            <ul>
-              <li>Adobe InDesign</li>
-              <li>Adobe Illustrator</li>
-              <li>Adobe Photoshop</li>
-            </ul>
-          </div>
-          <div class="fact">
-            <h3>FOCUS</h3>
-            <ul>
-              <li>편집 디자인</li>
-              <li>콘텐츠 기획</li>
-              <li>콘텐츠 시각화</li>
-            </ul>
+
+          <div class="about-facts">
+            <div>
+              <h4>학력</h4>
+              <p>서일대학교 · 2027.02 졸업 예정<br>상일여자고등학교 · 2023.02 졸업</p>
+            </div>
+            <div>
+              <h4>자격</h4>
+              <p>한국사능력검정 1급 · GTQ 1급<br>그림책창작전문지도사 2급</p>
+            </div>
           </div>
         </div>
       </div>
@@ -468,19 +519,20 @@ a.v:hover { color: var(--accent); }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
           </button>
         </div>
-        <div class="row">
-          <span class="k">PDF</span>
-          <span class="v">Portfolio 2026</span>
-          <a class="icon-btn" href="01/portfolio.pdf" target="_blank" rel="noopener" aria-label="포트폴리오 PDF 열기">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M8 7h9v9"/></svg>
-          </a>
-        </div>
       </div>
     </div>
   </section>
+
+  <!-- 맨 아래: 옆으로 계속 흘러가는 "contact me" 띠 (누르면 메일 쓰기) -->
+  <a class="marquee" href="mailto:syynsb@naver.com" data-cursor-text="Mail" aria-label="메일 보내기 — syynsb@naver.com">
+    <div class="marquee-track" aria-hidden="true">
+      <span>contact me</span><i>contact me</i><span>contact me</span><i>contact me</i><span>contact me</span><i>contact me</i>
+      <span>contact me</span><i>contact me</i><span>contact me</span><i>contact me</i><span>contact me</span><i>contact me</i>
+    </div>
+  </a>
 </main>
 
-<footer class="foot">© 2026 Choi Seoyun. All rights reserved.</footer>
+<footer class="foot">본 홈페이지는 포트폴리오용으로 제작되었으며 지속적으로 업데이트 예정입니다.<br>© 2026 Choi Seoyun. All rights reserved.</footer>
 
 <div class="dv" id="dv" role="dialog" aria-modal="true" aria-labelledby="dvTitle" aria-hidden="true">
   <div class="dv-bar">
@@ -499,7 +551,7 @@ const IMG = n => `01/works/web/work_${String(n).padStart(2, '0')}.jpg`;
 
 const WORKS = [
   {
-    cat: 'editing', label: 'Content Editing', kind: 'Travel Magazine',
+    cat: 'editing', label: 'Content Editing', kind: 'Travel Magazine', simple: true,
     title: '지역여행잡지 디자인 — 대전 · 경주',
     tools: 'Adobe InDesign',
     pages: [4, 5],
@@ -535,7 +587,7 @@ const WORKS = [
     ],
   },
   {
-    cat: 'editing', label: 'Content Editing', kind: 'Brochure',
+    cat: 'editing', label: 'Content Editing', kind: 'Brochure', simple: true,
     title: '디즈니플러스 감상 브로슈어',
     tools: 'Adobe InDesign · Photoshop',
     pages: [13, 14],
@@ -547,7 +599,7 @@ const WORKS = [
     ],
   },
   {
-    cat: 'graphic', label: 'Cover & Graphic', kind: 'Book Redesign',
+    cat: 'graphic', label: 'Cover & Graphic', kind: 'Book Redesign', simple: true,
     title: '북 리디자인 — 『조선 왕 연대기』',
     tools: 'Adobe Illustrator · InDesign',
     pages: [15],
@@ -563,24 +615,35 @@ const WORKS = [
 const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const list = document.getElementById('workList');
 
-const summary = w => w.desc.split(/(?<=다\.)\s/)[0];   // 목록 카드에는 설명 첫 문장만
 const pointsHtml = w => `<div class="points">${w.points.map(([k, t, d]) => `
   <div class="point"><h4><small>${k}</small>${esc(t)}</h4><p>${esc(d)}</p></div>`).join('')}</div>`;
 
-/* 목록: 작품마다 카드 하나 — 대표 이미지 + 짧은 소개 + 자세히 보기 */
+const summary = w => w.desc.split(/(?<=다\.)\s/)[0];   // 목록 카드에는 설명 첫 문장만
+
+/* 목록: 스크롤하면 위에 쌓이는 작품 행 — 번호 · 제목/부제 · (설명) · 태그 · 버튼 · 이미지
+   simple: true 인 작품은 설명 문장 없이, 설명은 상세 창에서만 보임 */
+const [nameOf, subOf] = [w => w.title.split(' — ')[0], w => w.title.split(' — ')[1]];
 list.innerHTML = WORKS.map((w, i) => `
-  <article class="work rv" data-cat="${w.cat}" data-i="${i}">
-    <button class="shot-main" data-detail data-cursor-text="View" aria-label="${esc(w.title)} 자세히 보기">
-      <img src="${IMG(w.pages[0])}" alt="${esc(w.title)} 대표 이미지" loading="lazy" width="2000" height="1407">
-      <span class="cue" aria-hidden="true">클릭해서 자세히 보기 <i>↗</i></span>
-    </button>
-    <div>
-      <p class="meta"><b>${w.label}</b> / ${w.kind}</p>
-      <h3>${esc(w.title)}</h3>
-      <p class="tools">${esc(w.tools)}</p>
-      <p class="desc">${esc(summary(w))}</p>
-      <button class="more" data-detail>자세히 보기 <small>이미지 ${w.pages.length}장</small> ↗</button>
+  <article class="work rv" data-cat="${w.cat}" data-i="${i}" style="--i:${i}">
+    <span class="solo-idx">${String(i + 1).padStart(2, '0')}</span>
+    <div class="solo-main">
+      <div class="solo-head">
+        <h3 class="solo-name">${esc(nameOf(w))}</h3>
+        <span class="solo-sub">${subOf(w) ? esc(subOf(w)) + ' · ' : ''}${w.label} · ${w.kind}</span>
+      </div>
+      <div class="solo-text">
+        ${w.simple ? '' : `<p>${esc(summary(w))}</p>`}
+        <p class="solo-tags">${w.tools.split(' · ').map(t => `<span>#${esc(t.replace(/^Adobe /, ''))}</span>`).join('')}</p>
+        <span class="solo-role">${w.label} / ${w.kind}</span>
+        <div class="solo-btns">
+          <button type="button" data-detail>자세히 보기 ↗</button>
+          <span>이미지 ${w.pages.length}장</span>
+        </div>
+      </div>
     </div>
+    <button type="button" class="solo-shot" data-detail data-cursor-text="View" aria-label="${esc(w.title)} 자세히 보기">
+      <img src="${IMG(w.pages[0])}" alt="${esc(w.title)} 대표 이미지" loading="lazy" width="2000" height="1407">
+    </button>
   </article>`).join('');
 
 /* tabs + counts */
@@ -590,7 +653,11 @@ tabs.forEach(t => {
   t.querySelector('.n').textContent = f === 'all' ? WORKS.length : WORKS.filter(w => w.cat === f).length;
   t.addEventListener('click', () => {
     tabs.forEach(x => x.setAttribute('aria-selected', x === t));
-    list.querySelectorAll('.work').forEach(el => { el.hidden = f !== 'all' && el.dataset.cat !== f; });
+    let k = 0;   // 보이는 작품끼리 쌓이는 순서(--i)와 번호를 다시 매김
+    list.querySelectorAll('.work').forEach(el => {
+      el.hidden = f !== 'all' && el.dataset.cat !== f;
+      if (!el.hidden) { el.style.setProperty('--i', k); el.querySelector('.solo-idx').textContent = String(++k).padStart(2, '0'); }
+    });
   });
 });
 
@@ -641,6 +708,8 @@ function closeDetail() {
   lastFocus && lastFocus.focus({ preventScroll: true });
 }
 dvClose.addEventListener('click', closeDetail);
+/* About의 작업물 태그 → 해당 작품 상세 창 */
+document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => openDetail(+b.dataset.open)));
 dvBody.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) renderDetail(+g.dataset.go); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && dv.classList.contains('open')) closeDetail(); });
 
